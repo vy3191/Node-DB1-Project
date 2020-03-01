@@ -21,6 +21,9 @@ server.get("/api/accounts", async (req,res,next) => {
 
 server.get("/api/accounts/:id", async (req,res,next) => {
   try {
+     const id = req.params.id;
+     const account = await db.select("*").from("accounts").where("id",id).first();
+     if(account) res.status(200).json(account);
 
   }catch(err) {
     next(err);
