@@ -32,7 +32,19 @@ server.get("/api/accounts/:id", async (req,res,next) => {
 
 server.post("/api/accounts", async (req,res,next) => {
   try {
-
+     console.log(req.body)
+     if(!req.body) res.status(400).json({msg:'Please enter required data'});
+     if(!req.body.name) res.status(400).json({msg:'Name is required'});
+     if(!req.body.budget) res.status(400).json({msg:'budget is required'});
+     const payload = {
+        name: req.body.name,
+        budget:req.body.budget
+     }
+     const [id] = await db("accounts").insert(payload);    
+     if(id) {
+        const account = await db("accounts").where("id", id).first();        
+        res.status(200).json(account);
+     }
   }catch(err) {
     next(err);
   }
