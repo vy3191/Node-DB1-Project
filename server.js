@@ -4,9 +4,16 @@ const server = express();
 
 server.use(express.json());
 
+server.get("/", (req,res,next) => {
+   res.status(200).json({
+      msg:' App is up and running now'
+   })
+})
+
 server.get("/api/accounts", async (req,res,next) => {
     try {
-
+      const accounts = await db.select("*").from("accounts");
+      if(accounts) res.json(accounts);
     }catch(err) {
       next(err);
     }
@@ -50,7 +57,7 @@ server.use( (req,res,next) => {
     });
 });
 
-server.use((req,res,next,err) => {
+server.use((err, req,res,next) => {
    res.status(500).json({
       msg:'Something went wrong with the server'
    })
