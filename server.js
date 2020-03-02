@@ -67,7 +67,11 @@ server.put("/api/accounts/:id", async (req,res,next) => {
 
 server.delete("/api/accounts/:id", async (req,res,next) => {
   try {
-
+    const{id} = req.params;
+    const account = await db("accounts").where({id:id}).first();
+    if(!account) res.status(404).json({msg:`There is no account with ID ${id}`})
+    const isDeletedCount = await db("accounts").where({id:id}).del();
+    if(isDeletedCount > 0) res.status(204).end();
   }catch(err) {
     next(err);
   }
