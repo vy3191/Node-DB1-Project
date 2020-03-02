@@ -52,6 +52,13 @@ server.post("/api/accounts", async (req,res,next) => {
 
 server.put("/api/accounts/:id", async (req,res,next) => {
   try {
+    const id = req.params.id;
+    const payload = {name: req.body.name, budget: req.body.budget};
+    const updatedAccount = await db("accounts").where("id",id).update(payload);
+    if(updatedAccount > 0) {
+       const account = await db("accounts").where("id", id).first();
+       if(account) res.status(200).json(account);
+    }
 
   }catch(err) {
     next(err);
